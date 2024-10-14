@@ -491,9 +491,47 @@ public:
 		}
 	}
 
+	void terminateLine(int &index) {
+		for (int j = 0; j < COLOUMNS; j++) {
+			grid[index][j].setBlockState(ACTIVE);
+			grid[index][j].setPieceState(NONE);
+		}
+		for (int i = index; i >= 0; i--) {
+			for (int j = 0; j < COLOUMNS; j++) {
+				if (grid[i][j].getBlockState() == PLACED) {
+					grid[i + 1][j].setPieceState(grid[i][j].getPieceState());
+					grid[i + 1][j].setBlockState(PLACED);
+					grid[i][j].setBlockState(ACTIVE);
+					grid[i][j].setPieceState(NONE);
+				}
+			}
+		}
+	}
+
+	void lineCheck() {
+		int counter = 0;
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLOUMNS; j++) {
+				if (grid[i][j].getBlockState() == PLACED) {
+					counter++;
+				}
+				else {
+					break;
+				}
+			}
+			if (counter == COLOUMNS) {
+				terminateLine(i);
+				return;
+			}
+			counter = 0;
+		}
+		return;
+	}
+
 	void update() {
 		if (!gravity()) {
 			placePiece();
+			lineCheck();
 			selectPiece();
 		};
 		input();
