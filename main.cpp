@@ -123,7 +123,7 @@ public:
 	}
 
 	void selectPiece() {
-		int pick = 0;
+		int pick = rand()%7;
 		switch (pick) {
 		case 0:
 			piece = I;
@@ -203,6 +203,7 @@ public:
 			break;
 		}
 		rotation = 0;
+		previous_rotation = 0;
 	}
 
 	void move_X(int x) {
@@ -256,18 +257,17 @@ public:
 	bool check_Y() {
 		switch (piece) {
 		case I:
-			for (int i = 0; i < 4; i++) {
-				if (grid[pos_y + 1][pos_x + i].getBlockState() == PLACED) {
-					return 1;
+			if (rotation == 0 || rotation == 3) {
+				for (int j = 0; j < 4; j++) {
+					if (grid[pos_y + 1][pos_x + j].getBlockState() == PLACED) {
+						return 1;
+					}
 				}
 			}
-			break;
-
-		case S:
-			if (grid[pos_y + 2][pos_x - 1].getBlockState() == PLACED ||
-				grid[pos_y + 2][pos_x - 0].getBlockState() == PLACED ||
-				grid[pos_y + 1][pos_x + 1].getBlockState() == PLACED) {
-				return 1;
+			else if (rotation == 1 || rotation == 2) {
+				if (grid[pos_y + 4][pos_x].getBlockState() == PLACED) {
+					return 1;
+				}
 			}
 			break;
 
@@ -278,33 +278,108 @@ public:
 			}
 			break;
 
+		case S:
+			if (rotation == 0 || rotation == 3) {
+				if (grid[pos_y + 2][pos_x - 1].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x - 0].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x + 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 1 || rotation == 2) {
+				if (grid[pieceBottom + 1][pos_x + 1].getBlockState() == PLACED ||
+					grid[pieceBottom][pos_x].getBlockState() == PLACED)
+					return 1;
+			}
+			break;
+
 		case Z:
-			if (grid[pos_y + 2][pos_x + 1].getBlockState() == PLACED ||
-				grid[pos_y + 2][pos_x - 0].getBlockState() == PLACED ||
-				grid[pos_y + 1][pos_x - 1].getBlockState() == PLACED) {
-				return 1;
+			if (rotation == 0 || rotation == 3) {
+				if (grid[pos_y + 2][pos_x + 1].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x - 0].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x - 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 1 || rotation == 2) {
+				if (grid[pieceBottom + 1][pos_x - 1].getBlockState() == PLACED ||
+					grid[pieceBottom][pos_x].getBlockState() == PLACED)
+					return 1;
 			}
 			break;
 
 		case L:
-			if (grid[pos_y + 3][pos_x].getBlockState() == PLACED ||
-				grid[pos_y + 3][pos_x + 1].getBlockState() == PLACED) {
-				return 1;
+			if (rotation == 0) {
+				if (grid[pos_y + 3][pos_x].getBlockState() == PLACED ||
+					grid[pos_y + 3][pos_x + 1].getBlockState() == PLACED) {
+					return 1;
+				}
+			}
+			else if (rotation == 1) {
+				if (grid[pos_y + 1][pos_x + 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x + 2].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 2) {
+				if (grid[pos_y + 2][pos_x].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x - 1].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x - 2].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 3) {
+				if (grid[pos_y + 1][pos_x].getBlockState() == PLACED ||
+					grid[pos_y + 3][pos_x + 1].getBlockState() == PLACED)
+					return 1;
 			}
 			break;
 
 		case J:
-			if (grid[pos_y + 3][pos_x].getBlockState() == PLACED ||
-				grid[pos_y + 3][pos_x - 1].getBlockState() == PLACED) {
-				return 1;
+			if (rotation == 0) {
+				if (grid[pos_y + 3][pos_x].getBlockState() == PLACED ||
+					grid[pos_y + 3][pos_x - 1].getBlockState() == PLACED) {
+					return 1;
+				}
+			}
+			else if (rotation == 1) {
+				if (grid[pos_y + 2][pos_x].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x + 1].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x + 2].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 2) {
+				if (grid[pos_y + 1][pos_x].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x + 1].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x + 2].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 3) {
+				if (grid[pos_y][pos_x + 1].getBlockState() == PLACED ||
+					grid[pos_y + 3][pos_x].getBlockState() == PLACED)
+					return 1;
 			}
 			break;
 
 		case T:
-			if (grid[pos_y + 2][pos_x].getBlockState() == PLACED ||
-				grid[pos_y + 2][pos_x - 1].getBlockState() == PLACED ||
-				grid[pos_y + 2][pos_x + 1].getBlockState() == PLACED) {
-				return 1;
+			if (rotation == 0) {
+				if (grid[pos_y + 2][pos_x].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x - 1].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x + 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 1) {
+				if (grid[pieceBottom + 1][pos_x].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x + 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 2) {
+				if (grid[pieceBottom][pos_x].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x - 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 3) {
+				if (grid[pos_y][pos_x + 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pieceBottom + 1].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x + 1].getBlockState() == PLACED)
+					return 1;
 			}
 			break;
 		}
@@ -314,8 +389,17 @@ public:
 	bool check_X_Left() {
 		switch (piece) {
 		case I:
-			if (grid[pos_y][pieceLeft - 1].getBlockState() == PLACED) {
-				return 1;
+			if (rotation == 0 || rotation == 3) {
+				if (grid[pos_y][pieceLeft - 1].getBlockState() == PLACED) {
+					return 1;
+				}
+			}
+			else if (rotation == 1 || rotation == 2) {
+				for (int i = 0; i < 4; i++) {
+					if (grid[pos_y + i][pieceLeft - 1].getBlockState() == PLACED) {
+						return 1;
+					}
+				}
 			}
 			break;
 
@@ -326,35 +410,106 @@ public:
 			break;
 
 		case S:
-			if (grid[pos_y][pos_x - 1].getBlockState() == PLACED ||
-				grid[pos_y + 1][pieceLeft - 1].getBlockState() == PLACED)
-				return 1;
+			if (rotation == 0 || rotation == 3) {
+				if (grid[pos_y][pos_x - 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pieceLeft - 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 1 || rotation == 2) {
+				if (grid[pos_y][pieceLeft - 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pieceLeft - 1].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x].getBlockState() == PLACED)
+					return 1;
+			}
 			break;
 
 		case Z:
-			if (grid[pos_y][pieceLeft - 1].getBlockState() == PLACED ||
-				grid[pos_y + 1][pos_x - 1].getBlockState() == PLACED)
-				return 1;
+			if (rotation == 0 || rotation == 3) {
+				if (grid[pos_y][pieceLeft - 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x - 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 1 || rotation == 2) {
+				if (grid[pos_y][pos_x - 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pieceLeft - 1].getBlockState() == PLACED ||
+					grid[pos_y + 2][pieceLeft - 1].getBlockState() == PLACED)
+					return 1;
+			}
 			break;
 
 		case L:
-			if (grid[pos_y][pieceLeft - 1].getBlockState() == PLACED ||
-				grid[pos_y + 1][pieceLeft - 1].getBlockState() == PLACED ||
-				grid[pos_y + 2][pieceLeft - 1].getBlockState() == PLACED)
-				return 1;
+			if (rotation == 0) {
+				if (grid[pos_y][pieceLeft - 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pieceLeft - 1].getBlockState() == PLACED ||
+					grid[pos_y + 2][pieceLeft - 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 1) {
+				if (grid[pos_y][pieceLeft - 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pieceLeft - 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 2) {
+				if (grid[pos_y + 1][pieceLeft - 1].getBlockState() == PLACED ||
+					grid[pos_y][pos_x - 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 3) {
+				if (grid[pos_y][pieceLeft - 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x].getBlockState() == PLACED)
+					return 1;
+			}
 			break;
 
 		case J:
-			if (grid[pos_y + 2][pieceLeft - 1].getBlockState() == PLACED ||
-				grid[pos_y][pos_x - 1].getBlockState() == PLACED ||
-				grid[pos_y + 1][pos_x - 1].getBlockState() == PLACED)
-				return 1;
+			if (rotation == 0) {
+				if (grid[pos_y + 2][pieceLeft - 1].getBlockState() == PLACED ||
+					grid[pos_y][pos_x - 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x - 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 1) {
+				if (grid[pos_y][pos_x - 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x - 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 2) {
+				if (grid[pos_y][pos_x - 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x + 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 3) {
+				if (grid[pos_y][pos_x - 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x - 1].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x - 1].getBlockState() == PLACED)
+					return 1;
+			}
 			break;
 
 		case T:
-			if (grid[pos_y][pos_x - 1].getBlockState() == PLACED ||
-				grid[pos_y + 1][pieceLeft - 1].getBlockState() == PLACED)
-				return 1;
+			if (rotation == 0) {
+				if (grid[pos_y][pos_x - 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pieceLeft - 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 1) {
+				if (grid[pos_y][pos_x - 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x - 1].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x - 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 2) {
+				if (grid[pos_y][pos_x - 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x - 2].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x - 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 3) {
+				if (grid[pos_y][pieceLeft - 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x].getBlockState() == PLACED)
+					return 1;
+			}
 			break;
 		}
 		return 0;
@@ -363,8 +518,17 @@ public:
 	bool check_X_Right() {
 		switch (piece) {
 		case I:
-			if (grid[pos_y][pieceRight + 1].getBlockState() == PLACED) {
-				return 1;
+			if (rotation == 0 || rotation == 3) {
+				if (grid[pos_y][pieceRight + 1].getBlockState() == PLACED) {
+					return 1;
+				}
+			}
+			else if (rotation == 1 || rotation == 2) {
+				for (int i = 0; i < 4; i++) {
+					if (grid[pos_y + i][pieceRight + 1].getBlockState() == PLACED) {
+						return 1;
+					}
+				}
 			}
 			break;
 
@@ -375,22 +539,56 @@ public:
 			break;
 
 		case S:
-			if (grid[pos_y][pieceRight + 1].getBlockState() == PLACED ||
-				grid[pos_y + 1][pos_x + 1].getBlockState() == PLACED)
-				return 1;
+			if (rotation == 0 || rotation == 3) {
+				if (grid[pos_y][pieceRight + 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x + 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 1 || rotation == 2) {
+				if (grid[pos_y + 1][pieceRight + 1].getBlockState() == PLACED ||
+					grid[pos_y + 2][pieceRight + 1].getBlockState() == PLACED ||
+					grid[pos_y][pos_x + 1].getBlockState() == PLACED)
+					return 1;
+			}
 			break;
 
 		case Z:
-			if (grid[pos_y][pos_x + 1].getBlockState() == PLACED ||
-				grid[pos_y + 1][pieceRight + 1].getBlockState() == PLACED)
-				return 1;
+			if (rotation == 0 || rotation == 3) {
+				if (grid[pos_y][pos_x + 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pieceRight + 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 1 || rotation == 2) {
+				if (grid[pos_y][pieceRight + 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pieceRight + 1].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x].getBlockState() == PLACED)
+					return 1;
+			}
 			break;
 
 		case L:
-			if (grid[pos_y][pos_x + 1].getBlockState() == PLACED ||
-				grid[pos_y + 1][pos_x + 1].getBlockState() == PLACED ||
-				grid[pos_y + 2][pieceRight + 1].getBlockState() == PLACED)
-				return 1;
+			if (rotation == 0) {
+				if (grid[pos_y][pos_x + 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x + 1].getBlockState() == PLACED ||
+					grid[pos_y + 2][pieceRight + 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 1) {
+				if (grid[pos_y][pieceRight + 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x + 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 2) {
+				if (grid[pos_y][pieceRight + 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pieceRight + 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 3) {
+				if (grid[pos_y][pos_x + 2].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x + 2].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x + 2].getBlockState() == PLACED)
+					return 1;
+			}
 			break;
 
 		case J:
@@ -401,9 +599,28 @@ public:
 			break;
 
 		case T:
-			if (grid[pos_y][pos_x + 1].getBlockState() == PLACED ||
-				grid[pos_y + 1][pieceRight + 1].getBlockState() == PLACED)
-				return 1;
+			if (rotation == 0) {
+				if (grid[pos_y][pos_x + 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pieceRight + 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 1) {
+				if (grid[pos_y][pos_x + 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x + 2].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x + 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 2) {
+				if (grid[pos_y][pos_x + 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x + 1].getBlockState() == PLACED ||
+					grid[pos_y + 2][pos_x + 1].getBlockState() == PLACED)
+					return 1;
+			}
+			else if (rotation == 3) {
+				if (grid[pos_y][pieceRight + 1].getBlockState() == PLACED ||
+					grid[pos_y + 1][pos_x + 2].getBlockState() == PLACED)
+					return 1;
+			}
 			break;
 		}
 		return 0;
@@ -421,101 +638,195 @@ public:
 			break;
 
 		case I:
-			for (int i = 0; i < 1; i++) {
-				for (int j = 0; j < 4; j++) {
-					grid[pos_y + i][pos_x + j].setBlockState(PLACED);
+			if (rotation == 0 || rotation == 3) {
+				for (int i = 0; i < 1; i++) {
+					for (int j = 0; j < 4; j++) {
+						grid[pos_y + i][pos_x + j].setBlockState(PLACED);
+					}
+				}
+			}
+			else if (rotation == 1 || rotation == 2) {
+				for (int i = 0; i < 4; i++) {
+					grid[pos_y + i][pos_x].setBlockState(PLACED);
 				}
 			}
 			break;
 
 		case S:
-			grid[pos_y][pos_x].setBlockState(PLACED);
-			grid[pos_y][pos_x + 1].setBlockState(PLACED);
-			grid[pos_y + 1][pos_x - 1].setBlockState(PLACED);
-			grid[pos_y + 1][pos_x - 0].setBlockState(PLACED);
+			if (rotation == 0 || rotation == 3) {
+				grid[pos_y][pos_x].setBlockState(PLACED);
+				grid[pos_y][pos_x + 1].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x - 1].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x - 0].setBlockState(PLACED);
+			}
+			else if (rotation == 1 || rotation == 2) {
+				grid[pos_y][pos_x].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x + 1].setBlockState(PLACED);
+				grid[pos_y + 2][pos_x + 1].setBlockState(PLACED);
+			}
 			break;
 
 		case Z:
-			grid[pos_y][pos_x].setBlockState(PLACED);
-			grid[pos_y][pos_x - 1].setBlockState(PLACED);
-			grid[pos_y + 1][pos_x].setBlockState(PLACED);
-			grid[pos_y + 1][pos_x + 1].setBlockState(PLACED);
+			if (rotation == 0 || rotation == 3) {
+				grid[pos_y][pos_x].setBlockState(PLACED);
+				grid[pos_y][pos_x - 1].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x + 1].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x - 0].setBlockState(PLACED);
+			}
+			else if (rotation == 1 || rotation == 2) {
+				grid[pos_y][pos_x].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x - 1].setBlockState(PLACED);
+				grid[pos_y + 2][pos_x - 1].setBlockState(PLACED);
+			}
 			break;
 
 		case L:
-			grid[pos_y][pos_x].setBlockState(PLACED);
-			grid[pos_y + 1][pos_x].setBlockState(PLACED);
-			grid[pos_y + 2][pos_x].setBlockState(PLACED);
-			grid[pos_y + 2][pos_x + 1].setBlockState(PLACED);
+			if (rotation == 0) {
+				grid[pos_y][pos_x].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x].setBlockState(PLACED);
+				grid[pos_y + 2][pos_x].setBlockState(PLACED);
+				grid[pos_y + 2][pos_x + 1].setBlockState(PLACED);
+			}
+			else if (rotation == 1) {
+				grid[pos_y][pos_x].setBlockState(PLACED);
+				grid[pos_y][pos_x + 1].setBlockState(PLACED);
+				grid[pos_y][pos_x + 2].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x].setBlockState(PLACED);
+			}
+			else if (rotation == 2) {
+				grid[pos_y][pos_x].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x - 1].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x - 2].setBlockState(PLACED);
+			}
+			else if (rotation == 3) {
+				grid[pos_y][pos_x].setBlockState(PLACED);
+				grid[pos_y][pos_x + 1].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x + 1].setBlockState(PLACED);
+				grid[pos_y + 2][pos_x + 1].setBlockState(PLACED);
+			}
 			break;
 
 		case J:
-			grid[pos_y][pos_x].setBlockState(PLACED);
-			grid[pos_y + 1][pos_x].setBlockState(PLACED);
-			grid[pos_y + 2][pos_x].setBlockState(PLACED);
-			grid[pos_y + 2][pos_x - 1].setBlockState(PLACED);
+			if (rotation == 0) {
+				grid[pos_y][pos_x].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x].setBlockState(PLACED);
+				grid[pos_y + 2][pos_x].setBlockState(PLACED);
+				grid[pos_y + 2][pos_x - 1].setBlockState(PLACED);
+			}
+			else if (rotation == 1) {
+				grid[pos_y][pos_x].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x + 1].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x + 2].setBlockState(PLACED);
+			}
+			else if (rotation == 2) {
+				grid[pos_y][pos_x].setBlockState(PLACED);
+				grid[pos_y][pos_x + 1].setBlockState(PLACED);
+				grid[pos_y][pos_x + 2].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x + 2].setBlockState(PLACED);
+			}
+			else if (rotation == 3) {
+				grid[pos_y][pos_x].setBlockState(PLACED);
+				grid[pos_y][pos_x + 1].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x].setBlockState(PLACED);
+				grid[pos_y + 2][pos_x].setBlockState(PLACED);
+			}
 			break;
 
 		case T:
-			grid[pos_y][pos_x].setBlockState(PLACED);
-			grid[pos_y + 1][pos_x].setBlockState(PLACED);
-			grid[pos_y + 1][pos_x - 1].setBlockState(PLACED);
-			grid[pos_y + 1][pos_x + 1].setBlockState(PLACED);
+			if (rotation == 0) {
+				grid[pos_y][pos_x].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x - 1].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x + 1].setBlockState(PLACED);
+			}
+			else if (rotation == 1) {
+				grid[pos_y][pos_x].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x].setBlockState(PLACED);
+				grid[pos_y + 2][pos_x].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x + 1].setBlockState(PLACED);
+			}
+			else if (rotation == 2) {
+				grid[pos_y][pos_x].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x].setBlockState(PLACED);
+				grid[pos_y + 2][pos_x].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x - 1].setBlockState(PLACED);
+			}
+			else if (rotation == 3) {
+				grid[pos_y][pos_x].setBlockState(PLACED);
+				grid[pos_y][pos_x + 1].setBlockState(PLACED);
+				grid[pos_y][pos_x + 2].setBlockState(PLACED);
+				grid[pos_y + 1][pos_x + 1].setBlockState(PLACED);
+			}
 			break;
 		}
 	}
 
 	void setRotationLeft() {
 		if (rotation == 0) {
+			previous_rotation = 0;
 			rotation = 2;
 		}
 		else if (rotation == 1) {
+			previous_rotation = 1;
 			rotation = 0;
 		}
 		else if (rotation == 2) {
+			previous_rotation = 2;
 			rotation = 3;
 		}
 		else if (rotation == 3) {
+			previous_rotation = 3;
 			rotation = 1;
 		}
+		rotate();
 	}
 
 	void setRotationRight() {
 		if (rotation == 0) {
+			previous_rotation = 0;
 			rotation = 1;
 		}
 		else if (rotation == 1) {
+			previous_rotation = 1;
 			rotation = 3;
 		}
 		else if (rotation == 2) {
+			previous_rotation = 2;
 			rotation = 0;
 		}
 		else if (rotation == 3) {
+			previous_rotation = 3;
 			rotation = 2;
 		}
+		rotate();
 	}
 
 	void input() {
 		static bool rotationLeftPressed = false;
 		static bool rotationRightPressed = false;
+		static bool hardDropPressed = false;
 
 		Event *event = new Event;
-		if (Keyboard::isKeyPressed(Keyboard::D) && pieceRight < COLOUMNS - 1) {
+		if (Keyboard::isKeyPressed(Keyboard::Quote) && pieceRight < COLOUMNS - 1) {
 			if (!check_X_Right()) {
 				move_X(1);
 			}
 		}
-		if (Keyboard::isKeyPressed(Keyboard::A) && pieceLeft > 0) {
+		if (Keyboard::isKeyPressed(Keyboard::L) && pieceLeft > 0) {
 			if (!check_X_Left()) {
 				move_X(-1);
 			}
 		}
-		if (Keyboard::isKeyPressed(Keyboard::S) && pieceBottom < ROWS - 1){
+		if (Keyboard::isKeyPressed(Keyboard::SemiColon) && pieceBottom < ROWS - 1){
 			if (!check_Y()) {
 				move_Y(1);
 			}
 		}
-		if (Keyboard::isKeyPressed(Keyboard::L) || Keyboard::isKeyPressed(Keyboard::Left)) {
+		if (Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::Left)) {
 			if (!rotationLeftPressed) {
 				setRotationLeft();
 				rotationLeftPressed = true;
@@ -524,7 +835,8 @@ public:
 		else {
 			rotationLeftPressed = false;
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Quote) || Keyboard::isKeyPressed(Keyboard::Right)) {
+
+		if (Keyboard::isKeyPressed(Keyboard::D) || Keyboard::isKeyPressed(Keyboard::Right)) {
 			if (!rotationRightPressed) {
 				setRotationRight();
 				rotationRightPressed = true;
@@ -532,6 +844,16 @@ public:
 		}
 		else {
 			rotationRightPressed = false;
+		}
+
+		if (Keyboard::isKeyPressed(Keyboard::Space)) {
+			if (!hardDropPressed) {
+				
+				hardDropPressed = true;
+			}
+		}
+		else {
+			hardDropPressed = false;
 		}
 	}
 
@@ -562,7 +884,7 @@ public:
 		}
 	}
 
-	void lineCheck() {
+	bool lineCheck() {
 		int counter = 0;
 		for (int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLOUMNS; j++) {
@@ -575,46 +897,304 @@ public:
 			}
 			if (counter == COLOUMNS) {
 				terminateLine(i);
-				return;
+				return true;
 			}
 			counter = 0;
 		}
-		return;
+		return false;
 	}
 
 	void rotate() {
 		switch (piece) {
 		case I:
+			if (previous_rotation == 0 && rotation == 1 || previous_rotation == 3 && rotation == 2 ||
+				previous_rotation == 0 && rotation == 2 || previous_rotation == 3 && rotation == 1) {
+				pos_x = pos_x + 2;
+				pos_y = pos_y - 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x;
+				pieceBottom = pos_y + 3;
+			}
+			else if (previous_rotation == 1 && rotation == 3 || previous_rotation == 2 && rotation == 0 ||
+					 previous_rotation == 2 && rotation == 3 || previous_rotation == 1 && rotation == 0) {
+				pos_x = pos_x - 2;
+				pos_y = pos_y + 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 3;
+				pieceBottom = pos_y;
+			}
 			break;
 
 		case O:
 			break;
 
 		case S:
+			if (previous_rotation == 0 && rotation == 1 || previous_rotation == 3 && rotation == 2 ||
+				previous_rotation == 0 && rotation == 2 || previous_rotation == 3 && rotation == 1) {
+				pos_x = pos_x - 1;
+				pos_y = pos_y - 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 1;
+				pieceBottom = pos_y + 2;
+			}
+			else if (previous_rotation == 1 && rotation == 3 || previous_rotation == 2 && rotation == 0 ||
+					 previous_rotation == 1 && rotation == 0 || previous_rotation == 2 && rotation == 3) {
+
+				pos_x = pos_x + 1;
+				pos_y = pos_y + 1;
+
+				pieceLeft = pos_x - 1;
+				pieceRight = pos_x + 1;
+				pieceBottom = pos_y + 1;
+			}
 			break;
 
 		case Z:
+			if (previous_rotation == 0 && rotation == 1 || previous_rotation == 3 && rotation == 2 ||
+				previous_rotation == 0 && rotation == 2 || previous_rotation == 3 && rotation == 1) {
+				pos_x = pos_x + 2;
+				pos_y = pos_y - 1;
+
+				pieceLeft = pos_x - 1;
+				pieceRight = pos_x;
+				pieceBottom = pos_y + 2;
+			}
+			else if (previous_rotation == 1 && rotation == 3 || previous_rotation == 2 && rotation == 0 ||
+				previous_rotation == 1 && rotation == 0 || previous_rotation == 2 && rotation == 3) {
+
+				pos_x = pos_x - 2;
+				pos_y = pos_y + 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 2;
+				pieceBottom = pos_y + 1;
+			}
 			break;
 
 		case L:
+			// CW
+			if (previous_rotation == 0 && rotation == 1) {
+				pos_x = pos_x - 1;
+				pos_y = pos_y + 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 2;
+				pieceBottom = pos_y + 1;
+			}
+			else if (previous_rotation == 1 && rotation == 3) {
+				pos_x = pos_x;
+				pos_y = pos_y - 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 1;
+				pieceBottom = pos_y + 2;
+			}
+			else if (previous_rotation == 3 && rotation == 2) {
+				pos_x = pos_x + 2;
+				pos_y = pos_y + 1;
+
+				pieceLeft = pos_x - 2;
+				pieceRight = pos_x;
+				pieceBottom = pos_y + 1;
+			}
+			else if (previous_rotation == 2 && rotation == 0) {
+				pos_x = pos_x - 1;
+				pos_y = pos_y - 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 1;
+				pieceBottom = pos_y + 2;
+			}
+			// CCW
+			if (previous_rotation == 0 && rotation == 2) {
+				pos_x = pos_x;
+				pos_y = pos_y + 1;
+
+				pieceLeft = pos_x - 2;
+				pieceRight = pos_x;
+				pieceBottom = pos_y + 1;
+			}
+			else if (previous_rotation == 2 && rotation == 3) {
+				pos_x = pos_x - 2;
+				pos_y = pos_y - 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 1;
+				pieceBottom = pos_y + 2;
+			}
+			else if (previous_rotation == 3 && rotation == 1) {
+				pos_x = pos_x;
+				pos_y = pos_y + 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 2;
+				pieceBottom = pos_y + 1;
+			}
+			else if (previous_rotation == 1 && rotation == 0) {
+				pos_x = pos_x + 1;
+				pos_y = pos_y - 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 1;
+				pieceBottom = pos_y + 2;
+			}
 			break;
 
-		case J:
+		case J:			
+			// CW
+			if (previous_rotation == 0 && rotation == 1) {
+				pos_x = pos_x - 1;
+				pos_y = pos_y + 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 2;
+				pieceBottom = pos_y + 1;
+			}
+			else if (previous_rotation == 1 && rotation == 3) {
+				pos_x = pos_x + 1;
+				pos_y = pos_y - 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 1;
+				pieceBottom = pos_y + 2;
+			}
+			else if (previous_rotation == 3 && rotation == 2) {
+				pos_x = pos_x - 1;
+				pos_y = pos_y + 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 2;
+				pieceBottom = pos_y + 1;
+			}
+			else if (previous_rotation == 2 && rotation == 0) {
+				pos_x = pos_x + 1;
+				pos_y = pos_y - 1;
+
+				pieceLeft = pos_x - 1;
+				pieceRight = pos_x;
+				pieceBottom = pos_y + 2;
+			}
+			// CCW
+			if (previous_rotation == 0 && rotation == 2) {
+				pos_x = pos_x - 1;
+				pos_y = pos_y + 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 2;
+				pieceBottom = pos_y + 1;
+			}
+			else if (previous_rotation == 2 && rotation == 3) {
+				pos_x = pos_x + 1;
+				pos_y = pos_y - 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 1;
+				pieceBottom = pos_y + 2;
+			}
+			else if (previous_rotation == 3 && rotation == 1) {
+				pos_x = pos_x - 1;
+				pos_y = pos_y + 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 2;
+				pieceBottom = pos_y + 1;
+			}
+			else if (previous_rotation == 1 && rotation == 0) {
+				pos_x = pos_x + 1;
+				pos_y = pos_y - 1;
+
+				pieceLeft = pos_x + 1;
+				pieceRight = pos_x;
+				pieceBottom = pos_y + 2;
+			}
 			break;
 
 		case T:
-			break;
+			// CW
+			if (previous_rotation == 0 && rotation == 1) {
+				pos_x = pos_x;
+				pos_y = pos_y - 1;
+				
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 1;
+				pieceBottom = pos_y + 2;
+			}
+			else if (previous_rotation == 1 && rotation == 3) {
+				pos_x = pos_x - 1;
+				pos_y = pos_y + 1;
 
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 2;
+				pieceBottom = pos_y + 1;
+			}
+			else if (previous_rotation == 3 && rotation == 2) {
+				pos_x = pos_x + 1;
+				pos_y = pos_y - 1;
+
+				pieceLeft = pos_x - 1;
+				pieceRight = pos_x;
+				pieceBottom = pos_y + 2;
+			}
+			else if (previous_rotation == 2 && rotation == 0) {
+				pos_x = pos_x;
+				pos_y = pos_y + 1;
+
+				pieceLeft = pos_x - 1;
+				pieceRight = pos_x + 1;
+				pieceBottom = pos_y + 1;
+			}
+
+			// CCW
+			if (previous_rotation == 0 && rotation == 2) {
+				pos_x = pos_x;
+				pos_y = pos_y - 1;
+
+				pieceLeft = pos_x - 1;
+				pieceRight = pos_x;
+				pieceBottom = pos_y + 2;
+			}
+			else if (previous_rotation == 2 && rotation == 3) {
+				pos_x = pos_x - 1;
+				pos_y = pos_y + 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 2;
+				pieceBottom = pos_y + 1;
+			}
+			else if (previous_rotation == 3 && rotation == 1) {
+				pos_x = pos_x + 1;
+				pos_y = pos_y - 1;
+
+				pieceLeft = pos_x;
+				pieceRight = pos_x + 1;
+				pieceBottom = pos_y + 2;
+			}
+			else if (previous_rotation == 1 && rotation == 0) {
+				pos_x = pos_x;
+				pos_y = pos_y + 1;
+
+				pieceLeft = pos_x - 1;
+				pieceRight = pos_x + 1;
+				pieceBottom = pos_y + 1;
+			}
+			break;
 		}
 	}
 
 	void update() {
 		if (!gravity()) {
 			placePiece();
-			lineCheck();
+			while (lineCheck()) {
+				this_thread::sleep_for(20ms);
+			}
 			selectPiece();
-		};
-		input();
+		}
+		else {
+			input();
+		}
 		reset();
 		switch (piece) {
 		case O:
@@ -639,43 +1219,118 @@ public:
 						grid[pos_y + i][pos_x + j].setPieceState(I);
 					}
 				}
-
 			}
 			break;
 
 		case S:
-			grid[pos_y][pos_x].setPieceState(S);
-			grid[pos_y][pos_x + 1].setPieceState(S);
-			grid[pos_y + 1][pos_x - 1].setPieceState(S);
-			grid[pos_y + 1][pos_x - 0].setPieceState(S);
+			if (rotation == 0 || rotation == 3) {
+				grid[pos_y][pos_x].setPieceState(S);
+				grid[pos_y][pos_x + 1].setPieceState(S);
+				grid[pos_y + 1][pos_x - 1].setPieceState(S);
+				grid[pos_y + 1][pos_x - 0].setPieceState(S);
+			}
+			else if (rotation == 1 || rotation == 2) {
+				grid[pos_y][pos_x].setPieceState(S);
+				grid[pos_y + 1][pos_x].setPieceState(S);
+				grid[pos_y + 1][pos_x + 1].setPieceState(S);
+				grid[pos_y + 2][pos_x + 1].setPieceState(S);
+			}
 			break;
 
 		case Z:
-			grid[pos_y][pos_x].setPieceState(Z);
-			grid[pos_y][pos_x - 1].setPieceState(Z);
-			grid[pos_y + 1][pos_x + 1].setPieceState(Z);
-			grid[pos_y + 1][pos_x - 0].setPieceState(Z);
+			if (rotation == 0 || rotation == 3) {
+				grid[pos_y][pos_x].setPieceState(Z);
+				grid[pos_y][pos_x - 1].setPieceState(Z);
+				grid[pos_y + 1][pos_x + 1].setPieceState(Z);
+				grid[pos_y + 1][pos_x - 0].setPieceState(Z);
+			}
+			else if (rotation == 1 || rotation == 2) {
+				grid[pos_y][pos_x].setPieceState(Z);
+				grid[pos_y + 1][pos_x].setPieceState(Z);
+				grid[pos_y + 1][pos_x - 1].setPieceState(Z);
+				grid[pos_y + 2][pos_x - 1].setPieceState(Z);
+			}
 			break;
 
 		case L:
-			grid[pos_y][pos_x].setPieceState(L);
-			grid[pos_y + 1][pos_x].setPieceState(L);
-			grid[pos_y + 2][pos_x].setPieceState(L);
-			grid[pos_y + 2][pos_x + 1].setPieceState(L);
+			if (rotation == 0) {
+				grid[pos_y][pos_x].setPieceState(L);
+				grid[pos_y + 1][pos_x].setPieceState(L);
+				grid[pos_y + 2][pos_x].setPieceState(L);
+				grid[pos_y + 2][pos_x + 1].setPieceState(L);
+			}
+			else if (rotation == 1) {
+				grid[pos_y][pos_x].setPieceState(L);
+				grid[pos_y][pos_x + 1].setPieceState(L);
+				grid[pos_y][pos_x + 2].setPieceState(L);
+				grid[pos_y + 1][pos_x].setPieceState(L);
+			}
+			else if (rotation == 2) {
+				grid[pos_y][pos_x].setPieceState(L);
+				grid[pos_y + 1][pos_x].setPieceState(L);
+				grid[pos_y + 1][pos_x - 1].setPieceState(L);
+				grid[pos_y + 1][pos_x - 2].setPieceState(L);
+			}
+			else if (rotation == 3) {
+				grid[pos_y][pos_x].setPieceState(L);
+				grid[pos_y][pos_x + 1].setPieceState(L);
+				grid[pos_y + 1][pos_x + 1].setPieceState(L);
+				grid[pos_y + 2][pos_x + 1].setPieceState(L);
+			}
 			break;
 
 		case J:
-			grid[pos_y][pos_x].setPieceState(J);
-			grid[pos_y + 1][pos_x].setPieceState(J);
-			grid[pos_y + 2][pos_x].setPieceState(J);
-			grid[pos_y + 2][pos_x - 1].setPieceState(J);
+			if (rotation == 0) {
+				grid[pos_y][pos_x].setPieceState(J);
+				grid[pos_y + 1][pos_x].setPieceState(J);
+				grid[pos_y + 2][pos_x].setPieceState(J);
+				grid[pos_y + 2][pos_x - 1].setPieceState(J);
+			}
+			else if (rotation == 1) {
+				grid[pos_y][pos_x].setPieceState(J);
+				grid[pos_y + 1][pos_x].setPieceState(J);
+				grid[pos_y + 1][pos_x + 1].setPieceState(J);
+				grid[pos_y + 1][pos_x + 2].setPieceState(J);
+			}
+			else if (rotation == 2) {
+				grid[pos_y][pos_x].setPieceState(J);
+				grid[pos_y][pos_x + 1].setPieceState(J);
+				grid[pos_y][pos_x + 2].setPieceState(J);
+				grid[pos_y + 1][pos_x + 2].setPieceState(J);
+			}
+			else if (rotation == 3) {
+				grid[pos_y][pos_x].setPieceState(J);
+				grid[pos_y][pos_x + 1].setPieceState(J);
+				grid[pos_y + 1][pos_x].setPieceState(J);
+				grid[pos_y + 2][pos_x].setPieceState(J);
+			}
 			break;
 
 		case T:
-			grid[pos_y][pos_x].setPieceState(T);
-			grid[pos_y + 1][pos_x].setPieceState(T);
-			grid[pos_y + 1][pos_x - 1].setPieceState(T);
-			grid[pos_y + 1][pos_x + 1].setPieceState(T);
+			if (rotation == 0) {
+				grid[pos_y][pos_x].setPieceState(T);
+				grid[pos_y + 1][pos_x].setPieceState(T);
+				grid[pos_y + 1][pos_x - 1].setPieceState(T);
+				grid[pos_y + 1][pos_x + 1].setPieceState(T);
+			}
+			else if (rotation == 1) {
+				grid[pos_y][pos_x].setPieceState(T);
+				grid[pos_y + 1][pos_x].setPieceState(T);
+				grid[pos_y + 2][pos_x].setPieceState(T);
+				grid[pos_y + 1][pos_x + 1].setPieceState(T);
+			}
+			else if (rotation == 2) {
+				grid[pos_y][pos_x].setPieceState(T);
+				grid[pos_y + 1][pos_x].setPieceState(T);
+				grid[pos_y + 2][pos_x].setPieceState(T);
+				grid[pos_y + 1][pos_x -1 ].setPieceState(T);
+			}
+			else if (rotation == 3) {
+				grid[pos_y][pos_x].setPieceState(T);
+				grid[pos_y][pos_x + 1].setPieceState(T);
+				grid[pos_y][pos_x + 2].setPieceState(T);
+				grid[pos_y + 1][pos_x + 1].setPieceState(T);
+			}
 			break;
 		}
 	}
