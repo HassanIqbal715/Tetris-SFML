@@ -111,6 +111,8 @@ private:
 	Block grid[ROWS][COLOUMNS + 2];
 	int pos_x, pos_y;
 	int pieceLeft, pieceRight, pieceBottom;
+	int rotation;
+
 public:
 	Game() {
 		for (int i = 0; i < ROWS; i++) {
@@ -121,7 +123,7 @@ public:
 	}
 
 	void selectPiece() {
-		int pick = rand()%7;
+		int pick = 0;
 		switch (pick) {
 		case 0:
 			piece = I;
@@ -200,6 +202,7 @@ public:
 			pieceBottom = pos_y + 1;
 			break;
 		}
+		rotation = 0;
 	}
 
 	void move_X(int x) {
@@ -304,7 +307,6 @@ public:
 				return 1;
 			}
 			break;
-
 		}
 		return 0;
 	}
@@ -463,7 +465,41 @@ public:
 		}
 	}
 
+	void setRotationLeft() {
+		if (rotation == 0) {
+			rotation = 2;
+		}
+		else if (rotation == 1) {
+			rotation = 0;
+		}
+		else if (rotation == 2) {
+			rotation = 3;
+		}
+		else if (rotation == 3) {
+			rotation = 1;
+		}
+	}
+
+	void setRotationRight() {
+		if (rotation == 0) {
+			rotation = 1;
+		}
+		else if (rotation == 1) {
+			rotation = 3;
+		}
+		else if (rotation == 2) {
+			rotation = 0;
+		}
+		else if (rotation == 3) {
+			rotation = 2;
+		}
+	}
+
 	void input() {
+		static bool rotationLeftPressed = false;
+		static bool rotationRightPressed = false;
+
+		Event *event = new Event;
 		if (Keyboard::isKeyPressed(Keyboard::D) && pieceRight < COLOUMNS - 1) {
 			if (!check_X_Right()) {
 				move_X(1);
@@ -478,6 +514,24 @@ public:
 			if (!check_Y()) {
 				move_Y(1);
 			}
+		}
+		if (Keyboard::isKeyPressed(Keyboard::L) || Keyboard::isKeyPressed(Keyboard::Left)) {
+			if (!rotationLeftPressed) {
+				setRotationLeft();
+				rotationLeftPressed = true;
+			}
+		}
+		else {
+			rotationLeftPressed = false;
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Quote) || Keyboard::isKeyPressed(Keyboard::Right)) {
+			if (!rotationRightPressed) {
+				setRotationRight();
+				rotationRightPressed = true;
+			}
+		}
+		else {
+			rotationRightPressed = false;
 		}
 	}
 
@@ -546,10 +600,20 @@ public:
 			break;
 
 		case I:
-			for (int i = 0; i < 1; i++) {
-				for (int j = 0; j < 4; j++) {
-					grid[pos_y + i][pos_x + j].setPieceState(I);
+			if (rotation == 0 || rotation == 3) {
+				for (int i = 0; i < 1; i++) {
+					for (int j = 0; j < 4; j++) {
+						grid[pos_y + i][pos_x + j].setPieceState(I);
+					}
 				}
+			}
+			else if (rotation == 1 || rotation == 2) {
+				for (int j = 0; j < 1; j++) {
+					for (int i = 0; i < 4; i++) {
+						grid[pos_y + i][pos_x + j].setPieceState(I);
+					}
+				}
+
 			}
 			break;
 
