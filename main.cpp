@@ -111,7 +111,7 @@ private:
 	Block grid[ROWS][COLOUMNS + 2];
 	int pos_x, pos_y;
 	int pieceLeft, pieceRight, pieceBottom;
-	int rotation;
+	int rotation, previous_rotation;
 
 public:
 	Game() {
@@ -353,7 +353,7 @@ public:
 
 		case T:
 			if (grid[pos_y][pos_x - 1].getBlockState() == PLACED ||
-				grid[pos_y][pieceLeft - 1].getBlockState() == PLACED)
+				grid[pos_y + 1][pieceLeft - 1].getBlockState() == PLACED)
 				return 1;
 			break;
 		}
@@ -402,7 +402,7 @@ public:
 
 		case T:
 			if (grid[pos_y][pos_x + 1].getBlockState() == PLACED ||
-				grid[pos_y][pieceRight + 1].getBlockState() == PLACED)
+				grid[pos_y + 1][pieceRight + 1].getBlockState() == PLACED)
 				return 1;
 			break;
 		}
@@ -580,6 +580,32 @@ public:
 			counter = 0;
 		}
 		return;
+	}
+
+	void rotate() {
+		switch (piece) {
+		case I:
+			break;
+
+		case O:
+			break;
+
+		case S:
+			break;
+
+		case Z:
+			break;
+
+		case L:
+			break;
+
+		case J:
+			break;
+
+		case T:
+			break;
+
+		}
 	}
 
 	void update() {
